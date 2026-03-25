@@ -1,5 +1,4 @@
 import 'package:chat_app/features/auth/presentation/screens/login_screen.dart';
-import 'package:chat_app/on_boarding_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'core/di/di.dart';
