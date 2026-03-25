@@ -1,6 +1,7 @@
 import 'package:chat_app/core/di/di.dart';
 import 'package:chat_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_app/features/auth/presentation/cubit/auth_state.dart';
+import 'package:chat_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final confirmPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final cubit = getIt<AuthCubit>();
+  bool secure1 = true;
+  bool secure2 = true;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +57,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   /// Email
                   TextFormField(
                     controller: emailController,
+                    onTapOutside: (event) {
+                      FocusScope.of(context).unfocus();
+                    },
                     validator: (value) {
                       if (value!.isEmpty) return "Enter email";
                       if (!value.contains("@")) return "Invalid email";
@@ -70,15 +76,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   /// Password
                   TextFormField(
                     controller: passwordController,
-                    obscureText: true,
+                    onTapOutside: (event) {
+                      FocusScope.of(context).unfocus();
+                    },
+                    obscureText: secure1,
                     validator: (value) {
                       if (value!.isEmpty) return "Enter password";
                       if (value.length < 6) return "Min 6 chars";
                       return null;
                     },
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed:(){
+                            setState(() {
+                              secure1 = !secure1;
+                            });
+                          },
+                          icon: Icon(secure1? Icons.visibility_off:Icons.visibility)
+                      ),
                       labelText: "Password",
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
 
@@ -87,14 +104,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   /// Confirm Password
                   TextFormField(
                     controller: confirmPasswordController,
-                    obscureText: true,
+                    onTapOutside: (event) {
+                      FocusScope.of(context).unfocus();
+                    },
+                    obscureText: secure2,
                     validator: (value) {
                       if (value != passwordController.text) {
                         return "Passwords do not match";
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
+                    decoration:  InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed:(){
+                            setState(() {
+                              secure2 = !secure2;
+                            });
+                          },
+                          icon: Icon(secure2? Icons.visibility_off:Icons.visibility)
+                      ),
                       labelText: "Confirm Password",
                       border: OutlineInputBorder(),
                     ),
@@ -113,11 +141,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           cubit.register(emailController.text.trim(), passwordController.text.trim());
                         }
                       },
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          shape: BeveledRectangleBorder()
+                      ),
                       child: state is AuthLoading
                           ? const CircularProgressIndicator()
-                          : const Text("Register"),
+                          : const Text("Register",style: TextStyle(fontSize: 17),),
                     ),
                   ),
+
+                  const SizedBox(height: 15),
+
+                  /// Navigate to Register
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("already have an account? "),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                        },
+                        child: const Text("Login"),
+                      ),
+                    ],
+                  )
                 ],
               ),
             );

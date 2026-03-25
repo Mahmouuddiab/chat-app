@@ -1,5 +1,7 @@
+import 'package:chat_app/features/auth/data/models/user_model.dart';
 import 'package:chat_app/features/auth/domain/entity/user_entity.dart';
 import 'package:chat_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 import '../data source/auth_remote_data_source.dart';
 
@@ -22,5 +24,12 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> logout() {
     return remote.logout();
+  }
+
+  @override
+  UserEntity? getCurrentUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+    return UserModel(id: user.uid, email: user.email ?? '');
   }
 }

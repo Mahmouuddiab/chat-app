@@ -1,3 +1,4 @@
+import 'package:chat_app/features/auth/domain/usecase/current_user.dart';
 import 'package:chat_app/features/auth/domain/usecase/login_usecase.dart';
 import 'package:chat_app/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:chat_app/features/auth/domain/usecase/register_usecase.dart';
@@ -10,11 +11,12 @@ class AuthCubit extends Cubit<AuthState> {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
-
+  final GetCurrentUserUseCase getCurrentUserUseCase;
   AuthCubit({
     required this.loginUseCase,
     required this.registerUseCase,
     required this.logoutUseCase,
+    required this.getCurrentUserUseCase
   }) : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
@@ -45,4 +47,15 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(e.toString()));
     }
   }
+
+  void loadCurrentUser() {
+    final user = getCurrentUserUseCase();
+    if (user != null) {
+      emit(AuthSuccess(user));
+    } else {
+      emit(AuthInitial());
+    }
+  }
+
+
 }

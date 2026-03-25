@@ -43,6 +43,10 @@ dependencies:
   get_it: ^9.2.1
   injectable: ^2.7.1+4
   flutter_svg: ^2.2.4
+  image_picker: ^1.2.1
+  shared_preferences: ^2.5.4
+  firebase_storage: ^13.2.0
+  video_player: ^2.11.1
 
 dev_dependencies:
   injectable_generator:
